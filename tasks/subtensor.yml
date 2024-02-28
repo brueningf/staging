@@ -1,0 +1,12 @@
+- name: Cloning subtensor
+  ansible.builtin.git:
+    repo: 'https://github.com/opentensor/subtensor.git'
+    dest: "{{ lookup('env', 'HOME') }}/opentensor/subtensor"
+    recursive: yes
+    update: yes
+    accept_hostkey: yes
+    version: main
+- name: Install and build
+  script: run_subtensor.sh
+  tags:
+    - subtensor
