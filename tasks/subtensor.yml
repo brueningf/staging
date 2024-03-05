@@ -6,7 +6,25 @@
     update: yes
     accept_hostkey: yes
     version: main
-- name: Install and build
-  script: run_subtensor.sh
+
+- name: Load toolchain and build subtensor
+  shell: >
+    ./scripts/init.sh &&
+    cargo build --release --features pow-faucet
+  args: 
+    executable: /usr/bin/tmux
+    chdir: "{{ lookup('env', 'HOME') }}/opentensor/subtensor"
+  become_user: fb
   tags:
     - subtensor
+
+- name: Run local chain
+  shell: >
+    tmux new-session -d -s localnet -n 'subtensor' 'BUILD_BINARY=0; bash ./scripts/localnet.sh'
+  args: 
+    executable: /usr/bin/tmux
+    chdir: "{{ lookup('env', 'HOME') }}/opentensor/subtensor"
+  become_user: fb
+  tags:
+    - subtensor
+
