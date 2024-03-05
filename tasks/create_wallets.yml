@@ -1,0 +1,29 @@
+- name: Cloning subnet
+  ansible.builtin.git:
+    repo: 'https://github.com/opentensor/bittensor-subnet-template.git'
+    dest: "{{ lookup('env', 'HOME') }}/opentensor/subnet-template"
+    recursive: yes
+    update: yes
+    accept_hostkey: yes
+    version: main
+
+- name: Create virtualenv and install
+  shell: >
+    python -m venv venv && 
+    python -m pip install -e .
+  args: 
+    executable: /usr/bin/tmux
+    chdir: "{{ lookup('env', 'HOME') }}/opentensor/subnet-template"
+  become_user: fb
+  tags:
+    - subtensor
+
+- name: Create a coldkey for the owner role
+  shell: >
+  args: 
+    executable: /usr/bin/tmux
+    chdir: "{{ lookup('env', 'HOME') }}/opentensor/subnet-template"
+  become_user: fb
+  tags:
+    - subtensor
+
