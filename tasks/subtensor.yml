@@ -7,20 +7,26 @@
     accept_hostkey: yes
     version: main
 
+- name: Check if compiled
+  stat:
+    path: "{{ lookup('env', 'HOME') }}/opentensor/subtensor/target/release/node-subtensor"
+  register: st
+
 - name: Load toolchain and build subtensor
   shell: >
     ./scripts/init.sh &&
-    cargo build --release --features pow-faucet
+    RUSTFLAGS="-Z threads=8" cargo build --release --features pow-faucet
   args: 
     executable: /usr/bin/tmux
     chdir: "{{ lookup('env', 'HOME') }}/opentensor/subtensor"
   become_user: fb
+  when: not st.stat.exists
   tags:
     - subtensor
 
 - name: Run local chain
   shell: >
-    tmux new-session -d -s localnet -n 'subtensor' 'BUILD_BINARY=0; bash ./scripts/localnet.sh'
+    tmux has-session -t localnet || tmux new-session -d -s localnet -n 'subtensor' 'BUILD_BINARY=0; bash ./scripts/run/subtensor.sh -e binary --network mainnet --node-type lite'
   args: 
     executable: /usr/bin/tmux
     chdir: "{{ lookup('env', 'HOME') }}/opentensor/subtensor"

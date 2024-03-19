@@ -9,8 +9,10 @@
 
 - name: Create virtualenv and install
   shell: >
-    python -m venv venv && 
-    python -m pip install -e .
+    pyenv local 3.10 &&
+    python3 -m venv venv && 
+    source "venv/bin/activate" &&
+    python3 -m pip install -e .
   args: 
     executable: /usr/bin/tmux
     chdir: "{{ lookup('env', 'HOME') }}/opentensor/subnet-template"
@@ -18,12 +20,16 @@
   tags:
     - subtensor
 
-- name: Create a coldkey for the owner role
+- name: Create wallets
   shell: >
-  args: 
+      source "venv/bin/activate" &&
+      btcli wallet new_coldkey --wallet.name owner --no_password --no_prompt &&
+      btcli wallet new_coldkey --wallet.name miner --no_password --no_prompt &&
+      btcli wallet new_hotkey --wallet.name miner --wallet.hotkey default --no_prompt &&
+      btcli wallet new_coldkey --wallet.name validator --no_password --no_prompt &&
+      btcli wallet new_hotkey --wallet.name validator --wallet.hotkey default --no_prompt &&
+      touch .wallets_setup
+  args:
     executable: /usr/bin/tmux
     chdir: "{{ lookup('env', 'HOME') }}/opentensor/subnet-template"
   become_user: fb
-  tags:
-    - subtensor
-
