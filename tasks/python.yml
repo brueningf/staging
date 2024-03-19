@@ -1,0 +1,37 @@
+- name: Check if pyenv is installed
+  shell: command -v pyenv
+  register: pyenv_exists
+  ignore_errors: yes
+
+- name: Install python
+  become: true
+  apt:
+    name: ["python3", "python3-pip", "python3-venv"]
+  tags:
+    - install
+    - python
+
+- name: Install pyenv
+  shell: curl https://pyenv.run | bash
+  #  when: pyenv_exists is failed
+  become_user: fb
+  tags:
+    - install
+    - python
+
+- name: Install python 3.10
+  shell: "{{ lookup('env', 'HOME') }}/.pyenv/bin/pyenv install 3.10"
+  args: 
+    executable: /usr/bin/tmux
+  become_user: fb
+  tags:
+    - python
+
+
+- name: Set global python 3.10
+  shell: "{{ lookup('env', 'HOME') }}/.pyenv/bin/pyenv global 3.10"
+  args: 
+    executable: /usr/bin/tmux
+  become_user: fb
+  tags:
+    - python
