@@ -18,6 +18,7 @@ ARG TAGS
 RUN addgroup --gid 1000 fb
 RUN adduser --gecos fb --uid 1000 --gid 1000 --disabled-password fb
 RUN echo '%fb ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
 USER fb
 WORKDIR /home/fb
 

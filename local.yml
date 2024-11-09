@@ -18,6 +18,8 @@
     - include_tasks: tasks/tools.yml
     - include_tasks: tasks/rust.yml
     - include_tasks: tasks/python.yml
-    - include_tasks: tasks/subtensor.yml
+
+    # activate for tensor development
+    # - include_tasks: tasks/subtensor.yml
     # - include_tasks: tasks/create_wallets.yml
 
